@@ -7,6 +7,8 @@ POPULATION_COUNT = 50
 GENERATION_COUNT = 30000
 CROSSING_RATE = 0.8
 MUTATION_RATE = 0.3
+TYPE_WEIGHT = 1
+TYPE_PRICE = 2
 
 weights = [
     9, 7, 8, 2, 10, 7, 7, 8, 5, 4, 7, 5, 7, 5, 9, 9, 9, 8, 8, 2, 7, 7, 9, 8, 4, 7,
@@ -27,5 +29,33 @@ def make_population():
 
     return populations
 
+def evaluate(populations):
+    values = []
+
+    for individual in populations:
+        total_weight = calc_total_value(individual, TYPE_WEIGHT)
+
+        if total_weight <= MAX_WEIGHT:
+            values.append(calc_total_value(individual, TYPE_PRICE))
+        else:
+            values.append(1)
+
+    return values
+
+def calc_total_value(array, type):
+    sum = 0
+
+    if type == TYPE_WEIGHT:
+        for i in array:
+            if i:
+                sum += weights[i]
+    else:
+        for i in array:
+            if i:
+                sum += prices[i]
+
+    return sum
+
 if __name__ == "__main__":
     populations = make_population()
+    print(evaluate(populations))
