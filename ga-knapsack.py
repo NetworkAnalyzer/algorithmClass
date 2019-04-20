@@ -18,7 +18,7 @@ class GA:
         self.fitness_master = {}
 
     def main(self): 
-        pop = [{'param': p} for p in self.get_population()]
+        pop = [{'param': p} for p in self.make_population()]
         
         for g in range(N_GEN):
             print('Generation%3s:') % str(g), 
@@ -46,7 +46,7 @@ class GA:
             print(pop[0]['score0'], pop[0]['score1'], pop[0]['param'])
 
             
-    def get_population(self):
+    def make_population(self):
         # Make items
         for i in xrange(N_ITEMS):
             self.items[i] = (random.randint(0, 100), random.randint(1, 10))  # value, weight
