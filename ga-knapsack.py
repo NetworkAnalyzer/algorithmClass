@@ -6,8 +6,9 @@ import copy
 import operator
 import pandas as pd
 
-N_ITEMS = 20
-N_POP = 20
+N_ITEMS = 50
+ITEMS_PER_POP = 5
+N_POP = 50
 N_GEN = 25
 MUTATE_PROB = 0.1
 ELITE_RATE = 0.5
@@ -19,6 +20,9 @@ class GA:
 
     def main(self): 
         pop = [{'param': p} for p in self.make_population()]
+
+        # pop (N_POPの数だけ個体をもつ)
+        # => [{'param': [(14, 7), (12, 4), (31, 7), (22, 10), (7, 8)]}, ... , {'param': [(2, 7), (36, 9), (20, 9), (28, 5), (2, 7)]}]
         
         for g in range(N_GEN):
             print('Generation%3s:') % str(g), 
@@ -47,15 +51,29 @@ class GA:
 
             
     def make_population(self):
-        # Make items
-        for i in xrange(N_ITEMS):
-            self.items[i] = (random.randint(0, 100), random.randint(1, 10))  # value, weight
+        weights = [
+            9, 7, 8, 2, 10, 7, 7, 8, 5, 4, 7, 5, 7, 5, 9, 9, 9, 8, 8, 2, 7, 7, 9, 8, 4, 7,
+            3, 9, 7, 7, 9, 5, 10, 7, 10, 10, 7, 10, 10, 10, 3, 8, 3, 4, 2, 2, 5, 3, 9, 2
+        ]
+        prices = [
+            20, 28, 2, 28, 15, 28, 21, 7, 28, 12, 21, 4, 31, 28, 24, 36, 33, 2, 25, 21, 35, 14, 36, 25, 12,
+            14, 40, 36, 2, 28, 33, 40, 22, 2, 18, 22, 14, 22, 15, 22, 40, 7, 4, 21, 21, 28, 40, 4, 24, 21
+        ]
 
-        # Make population
+        for i in xrange(N_ITEMS):
+            self.items[i] = (prices[i], weights[i])
+
+        # self.items
+        # => {0: (20, 9), 1: (28, 7), ... , 48: (24, 9), 49: (21, 2)}
+
         pop = []
         for i in range(N_POP):
-            ind = [self.items[k] for k in random.sample(range(N_ITEMS), 5)]
-            pop.append(ind)
+            # itemsからランダムに5つのアイテムを選択して，それを1つの母集団としている
+            # この選び方が，最終結果を左右するかもしれない
+            # 重さの上限が 60 なので，選択するアイテムの数をもう少し増やしてもいいかも
+            # REVIEW: indexではなく，アイテム情報を保持するのはどうなのか？
+            item = [self.items[k] for k in random.sample(range(N_ITEMS), ITEMS_PER_POP)]
+            pop.append(item)
 
         return pop
 
