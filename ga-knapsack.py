@@ -51,9 +51,6 @@ class GA:
         for i in xrange(N_ITEMS):
             self.items[i] = (random.randint(0, 100), random.randint(1, 10))  # value, weight
 
-            print(self.items)
-            exit()
-
         # Make population
         pop = []
         for i in range(N_POP):
@@ -95,7 +92,7 @@ class GA:
 
         # This generation fitness
         df = pd.DataFrame(fitness)
-        df = df.sort(['score0', 'score1'], ascending=[False, True])
+        df = df.sort_values(['score0', 'score1'], ascending=[False, True])
 
         fitness = df.to_dict('records')
         
