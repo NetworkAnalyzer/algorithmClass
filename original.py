@@ -9,6 +9,7 @@ CROSSING_RATE = 0.8
 MUTATION_RATE = 0.3
 TYPE_WEIGHT = 1
 TYPE_PRICE = 2
+MIN_VALUE = 1
 
 weights = [
     9, 7, 8, 2, 10, 7, 7, 8, 5, 4, 7, 5, 7, 5, 9, 9, 9, 8, 8, 2, 7, 7, 9, 8, 4, 7,
@@ -34,14 +35,12 @@ def evaluate(populations):
 
     for individual in populations:
         total_weight = calc_total_value(individual, TYPE_WEIGHT)
-
-        if total_weight <= MAX_WEIGHT:
-            total_value = calc_total_value(individual, TYPE_PRICE)
+        total_value = calc_total_value(individual, TYPE_PRICE)
+        
+        if total_weight <= MAX_WEIGHT:    
             values.append(total_value)
         else:
-            values.append(1)
-
-        print([total_weight, total_value])
+            values.append(MIN_VALUE)
 
     return values
 
