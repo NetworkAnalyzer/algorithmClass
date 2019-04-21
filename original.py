@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
+import math
+import copy
 import numpy as np
 
 MAX_WEIGHT = 60
@@ -79,9 +81,21 @@ def select_parents(populations, values):
 
     return populations[parent_indices[0]], populations[parent_indices[1]]
 
+def crossover(parent_1, parent_2):
+    length = len(parent_1)
+    r1 = int(math.floor(random.random() * length))
+    r2 = r1 + int(math.floor(random.random() * (length - r1)))
+    
+    child = copy.deepcopy(parent_1)
+    child[r1:r2] = parent_2[r1:r2]
+
+    return child
+
 if __name__ == "__main__":
     populations = make_population()
     values = evaluate(populations)
     parent_1, parent_2 = select_parents(populations, values)
     print(parent_1)
     print(parent_2)
+    child = crossover(parent_1, parent_2)
+    print(child)
