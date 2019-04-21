@@ -56,6 +56,32 @@ def calc_total_value(array, type):
 
     return sum
 
+def select_parents(populations, values):
+    values = np.array(values)
+    # 価値の大小関係を反転する
+    values = np.abs(values - np.max(values))
+
+    total = np.sum(values)
+
+    parent_indices = []
+    for _ in range(2):
+        threshold = random.uniform(0.0, total)
+
+        sum = 0.0
+        for index, value in enumerate(values):
+            sum += value
+            if sum >= threshold:
+                parent_indices.append(index)
+                # 選択した個体が次のforで選択されないように
+                values[index] = 0.
+                total -= value
+                break
+
+    return populations[parent_indices[0]], populations[parent_indices[1]]
+
 if __name__ == "__main__":
     populations = make_population()
-    evaluate(populations)
+    values = evaluate(populations)
+    parent_1, parent_2 = select_parents(populations, values)
+    print(parent_1)
+    print(parent_2)
