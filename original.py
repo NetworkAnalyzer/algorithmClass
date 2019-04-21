@@ -6,7 +6,7 @@ import numpy as np
 
 MAX_WEIGHT = 60
 POPULATION_COUNT = 50
-GENERATION_COUNT = 30000
+GENERATION_COUNT = 1000
 CROSSING_RATE = 0.8
 MUTATION_RATE = 0.3
 TYPE_WEIGHT = 1
@@ -108,10 +108,23 @@ def change_generation(populations, values, child):
     
     return populations
 
+def print_populations(populations, count):
+    values = []
+    for individual in populations:
+        weight = calc_total_value(individual, TYPE_WEIGHT)
+        price  = calc_total_value(individual, TYPE_PRICE)
+        values.append([weight, price])
+
+    print('\nGeneration : %s' % count)
+
+    for i in range(0, POPULATION_COUNT, 10):
+        print(values[i:i + 10])
+
 if __name__ == "__main__":
     populations = make_population()
+    print_populations(populations, 0)
 
-    for _ in range(GENERATION_COUNT):
+    for i in range(GENERATION_COUNT):
         values = evaluate(populations)
         parent_1 = select_parent_by_elite(populations, values)
         parent_2 = select_parent_by_roulette(populations, values)
@@ -121,3 +134,5 @@ if __name__ == "__main__":
             child = mutate(parent_1)
 
         populations = change_generation(populations, values, child)
+    
+    print_populations(populations, i + 1)
