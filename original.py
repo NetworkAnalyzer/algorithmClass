@@ -91,11 +91,23 @@ def crossover(parent_1, parent_2):
 
     return child
 
+def mutate(parent):
+    mutated_index = int(math.floor(random.random() * len(parent)))
+    item_index = random.choice(range(len(weights)))
+
+    child = copy.deepcopy(parent)
+    child[mutated_index] = item_index
+
+    return child
+
 if __name__ == "__main__":
     populations = make_population()
     values = evaluate(populations)
     parent_1, parent_2 = select_parents(populations, values)
     print(parent_1)
     print(parent_2)
-    child = crossover(parent_1, parent_2)
+    if random.random() < MUTATION_RATE:
+        child = crossover(parent_1, parent_2)
+    else:
+        child = mutate(parent_1)
     print(child)

@@ -25,7 +25,7 @@ class GA:
         # => [{'param': [(14, 7), (12, 4), (31, 7), (22, 10), (7, 8)]}, ... , {'param': [(2, 7), (36, 9), (20, 9), (28, 5), (2, 7)]}]
         
         for g in range(N_GEN):
-            print('Generation%3s:') % str(g), 
+            # print('Generation%3s:') % str(g), 
 
             # Get elites
             fitness = self.evaluate(pop)
@@ -36,6 +36,8 @@ class GA:
             while len(pop) < N_POP:
                 if random.random() < MUTATE_PROB:
                     m = random.randint(0, len(elites)-1)
+                    print(elites[m]['param'])
+                    exit()
                     child = self.mutate(elites[m]['param'])
                 else:
                     c1 = random.randint(0, len(elites)-1)
