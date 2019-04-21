@@ -100,6 +100,14 @@ def mutate(parent):
 
     return child
 
+def change_generation(populations, values, child):
+    values = np.array(values)
+    bottom_index = np.argmin(values)
+
+    populations[bottom_index] = child
+    
+    return populations
+
 if __name__ == "__main__":
     populations = make_population()
     values = evaluate(populations)
@@ -112,3 +120,5 @@ if __name__ == "__main__":
     else:
         child = mutate(parent_1)
     print(child)
+
+    populations = change_generation(populations, values, child)
