@@ -58,28 +58,28 @@ def calc_total_value(array, type):
 
     return sum
 
-def select_parents(populations, values):
+def select_parent_by_elite(populations, values):
+    values = np.array(values)
+    elite_index = np.argmax(values)
+
+    return populations[elite_index]
+
+def select_parent_by_roulette(populations, values):
     values = np.array(values)
     # 価値の大小関係を反転する
     values = np.abs(values - np.max(values))
-
     total = np.sum(values)
 
-    parent_indices = []
-    for _ in range(2):
-        threshold = random.uniform(0.0, total)
+    threshold = random.uniform(0.0, total)
 
-        sum = 0.0
-        for index, value in enumerate(values):
-            sum += value
-            if sum >= threshold:
-                parent_indices.append(index)
-                # 選択した個体が次のforで選択されないように
-                values[index] = 0.
-                total -= value
-                break
+    sum = 0.0
+    for index, value in enumerate(values):
+        sum += value
+        if sum >= threshold:
+            parent_index = index
+            break
 
-    return populations[parent_indices[0]], populations[parent_indices[1]]
+    return populations[parent_index]
 
 def crossover(parent_1, parent_2):
     length = len(parent_1)
@@ -103,7 +103,8 @@ def mutate(parent):
 if __name__ == "__main__":
     populations = make_population()
     values = evaluate(populations)
-    parent_1, parent_2 = select_parents(populations, values)
+    parent_1 = select_parent_by_elite(populations, values)
+    parent_2 = select_parent_by_roulette(populations, values)
     print(parent_1)
     print(parent_2)
     if random.random() < MUTATION_RATE:
