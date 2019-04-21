@@ -110,15 +110,14 @@ def change_generation(populations, values, child):
 
 if __name__ == "__main__":
     populations = make_population()
-    values = evaluate(populations)
-    parent_1 = select_parent_by_elite(populations, values)
-    parent_2 = select_parent_by_roulette(populations, values)
-    print(parent_1)
-    print(parent_2)
-    if random.random() < MUTATION_RATE:
-        child = crossover(parent_1, parent_2)
-    else:
-        child = mutate(parent_1)
-    print(child)
 
-    populations = change_generation(populations, values, child)
+    for _ in range(GENERATION_COUNT):
+        values = evaluate(populations)
+        parent_1 = select_parent_by_elite(populations, values)
+        parent_2 = select_parent_by_roulette(populations, values)
+        if random.random() < MUTATION_RATE:
+            child = crossover(parent_1, parent_2)
+        else:
+            child = mutate(parent_1)
+
+        populations = change_generation(populations, values, child)
