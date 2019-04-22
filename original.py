@@ -81,14 +81,14 @@ def select_parent_by_roulette(populations, values):
     return populations[parent_index]
 
 def crossover(parent_1, parent_2):
-    length = len(parent_1)
-    r1 = int(math.floor(random.random() * length))
-    r2 = r1 + int(math.floor(random.random() * (length - r1)))
-    
-    child = copy.deepcopy(parent_1)
-    child[r1:r2] = parent_2[r1:r2]
+    child_1 = parent_1
+    child_2 = parent_2
 
-    return child
+    for i in range(len(child_1)):
+        if random.random() < 0.5:
+            child_1[i], child_2[i] = child_2[i], child_1[i]
+
+    return random.choice([child_1, child_2])
 
 def mutate(parent):
     mutated_index = int(math.floor(random.random() * len(parent)))
