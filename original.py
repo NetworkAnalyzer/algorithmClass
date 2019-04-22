@@ -5,6 +5,7 @@ import copy
 import numpy as np
 
 MAX_WEIGHT = 60
+INITIAL_INDIVIDUAL_COUNT = 14
 POPULATION_COUNT = 50
 GENERATION_COUNT = 1000
 CROSSING_RATE = 0.8
@@ -26,7 +27,7 @@ def make_population():
     populations = []
 
     for i in range(0, POPULATION_COUNT):
-        individual = random.sample(range(len(weights)), 7)
+        individual = random.sample(range(len(weights)), INITIAL_INDIVIDUAL_COUNT)
         populations.append(individual)
 
     return populations
@@ -119,6 +120,8 @@ def print_populations(populations, count):
     for i in range(0, POPULATION_COUNT, 10):
         print(values[i:i + 10])
 
+    return values
+
 if __name__ == "__main__":
     populations = make_population()
     print_populations(populations, 0)
@@ -133,5 +136,29 @@ if __name__ == "__main__":
             child = mutate(parent_1)
 
         populations = change_generation(populations, values, child)
+
+    values = print_populations(populations, i + 1)
+
+    weights = []
+    prices = []
+
+    for value in values:
+        weights.append(value[0])
+        prices.append(value[1])
+
+    np_weights = np.array(weights)
+    np_prices  = np.array(prices)
+
+    np_weights = [weight if weight <= MAX_WEIGHT else 0 for weight in np_weights]
+    max_weight_indices = [i for i, x in enumerate(np_weights) if x == max(np_weights)]
+    max_price_indices = [i for i, x in enumerate(np_prices)  if x == max(np_prices)]
     
-    print_populations(populations, i + 1)
+    print(max_weight_indices)
+    print(max_price_indices)
+
+    try:
+        best_individual_index = list(set(max_price_indices) and set(max_weight_indices))[0]
+        print(best_individual_index)
+        print('The best individual is', values[best_individual_index])
+    except:
+        print('The best individual is not exists')
