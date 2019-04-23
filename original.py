@@ -7,7 +7,7 @@ import numpy as np
 MAX_WEIGHT = 60
 INITIAL_INDIVIDUAL_COUNT = 14
 POPULATION_COUNT = 50
-GENERATION_COUNT = 1000
+GENERATION_COUNT = 30000
 CROSSING_RATE = 0.8
 MUTATION_RATE = 0.3
 TYPE_WEIGHT = 1
@@ -153,12 +153,8 @@ if __name__ == "__main__":
     max_weight_indices = [i for i, x in enumerate(np_weights) if x == max(np_weights)]
     max_price_indices = [i for i, x in enumerate(np_prices)  if x == max(np_prices)]
     
-    print(max_weight_indices)
-    print(max_price_indices)
-
     try:
         best_individual_index = list(set(max_price_indices) and set(max_weight_indices))[0]
-        print(best_individual_index)
-        print('The best individual is', values[best_individual_index])
+        print('\nThe best individual is', values[best_individual_index])
     except:
-        print('The best individual is not exists')
+        print('\nThe best individual is not exists')
