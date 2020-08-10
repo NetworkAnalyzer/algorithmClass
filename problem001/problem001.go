@@ -14,13 +14,17 @@ import (
 // できれば、一度の走査で判定したい
 
 func Run(numbers []int, k int) bool {
-	var sums []int
+	var diffs []int
 
-	for i, n := range numbers {
-		for _, v := range numbers[i + 1:] {
-			sums = append(sums, n + v)
+	for _, n := range numbers {
+		diff := k - n
+
+		if funk.Contains(diffs, diff) {
+			return true
 		}
+
+		diffs = append(diffs, n)
 	}
 
-	return funk.Contains(sums, k)
+	return false
 }
