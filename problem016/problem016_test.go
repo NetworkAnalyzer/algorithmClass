@@ -15,26 +15,30 @@ func TestRecord(t *testing.T) {
 		},
 	}
 
+	logger := newLogger()
+
 	t.Run("trueのパターン", func(t *testing.T) {
 		var err error
 
-		err = record(1)
-		err = record(2)
+		err = logger.record(1)
+		err = logger.record(2)
 
 		assert.Nil(t, err)
-		assert.EqualValues(t, expected, logs)
+		assert.EqualValues(t, expected, logger.log)
 	})
 
 	t.Run("already existsのパターン", func(t *testing.T) {
-		err := record(1)
+		err := logger.record(1)
 
 		assert.NotNil(t, err)
 	})
 }
 
 func TestGetLast(t *testing.T) {
+	logger := newLogger()
+
 	for _, v := range []int{1, 2, 3, 4, 5} {
-		record(v)
+		logger.record(v)
 	}
 
 	last1 := []log{
@@ -42,7 +46,7 @@ func TestGetLast(t *testing.T) {
 			orderID: 5,
 		},
 	}
-	assert.EqualValues(t, last1, getLast(1))
+	assert.EqualValues(t, last1, logger.getLast(1))
 
 	last2 := []log{
 		{
@@ -52,5 +56,5 @@ func TestGetLast(t *testing.T) {
 			orderID: 5,
 		},
 	}
-	assert.EqualValues(t, last2, getLast(2))
+	assert.EqualValues(t, last2, logger.getLast(2))
 }

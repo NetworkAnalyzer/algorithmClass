@@ -18,21 +18,29 @@ import (
 // log takes O(N) Space due to size
 // record and getLast is O(1) Time complexity
 
+type logger struct {
+	log []log
+}
+
 type log struct {
 	orderID int
 }
 
-var logs []log
+func newLogger() *logger {
+	return &logger{
+		log: nil,
+	}
+}
 
-func record(orderID int) error {
-	if funk.Contains(logs, log{orderID: orderID}) {
+func (l *logger) record(orderID int) error {
+	if funk.Contains(l.log, log{orderID: orderID}) {
 		return errors.New("orderID already exists")
 	}
 
-	logs = append(logs, log{orderID: orderID})
+	l.log = append(l.log, log{orderID: orderID})
 	return nil
 }
 
-func getLast(i int) []log {
-	return logs[len(logs) - i:]
+func (l *logger) getLast(i int) []log {
+	return l.log[len(l.log) - i:]
 }
