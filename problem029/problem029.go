@@ -19,6 +19,27 @@ import (
 // You can assume the string to be encoded have no digits and consists solely of alphabetic characters.
 // You can assume the string to be decoded is valid.
 
+type previousCharInfo struct {
+	char  string
+	count int
+}
+
+func (p *previousCharInfo) encode() string {
+	return fmt.Sprintf("%d%s", p.count, p.char)
+}
+
+func (p *previousCharInfo) set(char string) {
+	p.char = char
+}
+
+func (p *previousCharInfo) countUp() {
+	p.count++
+}
+
+func (p *previousCharInfo) resetCount() {
+	p.count = 1
+}
+
 func encode(str string) (string, error) {
 	r := regexp.MustCompile(`^[A-Z]+$`)
 	if !r.MatchString(str) {
@@ -26,23 +47,22 @@ func encode(str string) (string, error) {
 	}
 
 	var result string
-	var previous struct{
-		rune  string
-		count int
-	}
-	for i, rune := range str {
-		if i == 0 || string(rune) == previous.rune {
-			previous.rune = string(rune)
-			previous.count++
+	var previous previousCharInfo
+	for i, v := range str {
+		char := string(v)
+
+		if i == 0 || char == previous.char {
+			previous.set(char)
+			previous.countUp()
 			continue
 		}
 
-		result += fmt.Sprintf("%d%s", previous.count, previous.rune)
-		previous.rune = string(rune)
-		previous.count = 1
+		result += previous.encode()
+		previous.set(char)
+		previous.resetCount()
 	}
 
-	result += fmt.Sprintf("%d%s", previous.count, previous.rune)
+	result += previous.encode()
 
 	return result, nil
 }
@@ -54,13 +74,13 @@ func decode(str string) (string, error) {
 	}
 
 	var result string
-	runes := strings.Split(str, "")
-	for i := 0; i < len(runes); i+=2 {
-		repeat, err := strconv.Atoi(runes[i])
-		if err != nil {
+	chars := strings.Split(str, "")
+	for i := 0; i < len(chars); i += 2 {
+		if repeat, err := strconv.Atoi(chars[i]); err != nil {
 			return "", err
+		} else {
+			result += strings.Repeat(chars[i + 1], repeat)
 		}
-		result += strings.Repeat(runes[i + 1], repeat)
 	}
 
 	return result, nil
