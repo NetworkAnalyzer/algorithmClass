@@ -2,7 +2,6 @@ package problem043
 
 import (
 	"errors"
-	"github.com/thoas/go-funk"
 )
 
 // This problem was asked by Amazon.
@@ -17,51 +16,66 @@ import (
 //
 // Each method should run in constant time.
 
-type stack struct {
-	values   []int
-	maxValue int
+type Stack struct {
+	values     []int
+	maxIndices []int
 }
 
-func newStack() stack {
-	return stack{}
+func NewStack() Stack {
+	return Stack{}
 }
 
-func (s *stack) push(value int) {
+func (s *Stack) Push(value int) {
 	s.values = append(s.values, value)
-	s.updateMaxValue(&value)
+	s.updateMaxIndices(value)
 }
 
-func (s *stack) isEmpty() bool {
-	return len(s.values) == 0
-}
-
-func (s *stack) updateMaxValue(value *int) {
-	// REVIEW: こんなことしたくない
-	if !s.isEmpty() {
-		s.maxValue = funk.MaxInt(s.values).(int)
-	}
-
-	if value != nil && *value > s.maxValue {
-		s.maxValue = *value
-	}
-}
-
-func (s *stack) pop() (int, error) {
-	if s.isEmpty() {
+func (s *Stack) Pop() (int, error) {
+	if empty(s.values) {
 		return 0, errors.New("stack is empty")
 	}
 
-	pop := s.values[len(s.values) - 1]
-	s.values = s.values[:len(s.values) - 1]
-	s.updateMaxValue(nil)
+	if lastIndex(s.values) == last(s.maxIndices) {
+		s.maxIndices = removeLast(s.maxIndices)
+	}
+
+	pop := last(s.values)
+	s.values = removeLast(s.values)
 
 	return pop, nil
 }
 
-func (s *stack) max() (int, error) {
-	if s.isEmpty() {
+func (s *Stack) Max() (int, error) {
+	if empty(s.values) {
 		return 0, errors.New("stack is empty")
 	}
 
-	return s.maxValue, nil
+	return s.getMaxValue(), nil
+}
+
+func (s *Stack) updateMaxIndices(value int) {
+	if empty(s.maxIndices) || value > s.getMaxValue() {
+		s.maxIndices = append(s.maxIndices, lastIndex(s.values))
+	}
+}
+
+func (s *Stack) getMaxValue() int {
+	return s.values[last(s.maxIndices)]
+}
+
+// utils
+func empty(slice []int) bool {
+	return len(slice) == 0
+}
+
+func last(slice []int) int {
+	return slice[lastIndex(slice)]
+}
+
+func lastIndex(slice []int) int {
+	return len(slice) - 1
+}
+
+func removeLast(slice []int) []int {
+	return slice[:len(slice) - 1]
 }

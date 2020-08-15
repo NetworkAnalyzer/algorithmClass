@@ -5,57 +5,54 @@ import (
 	"testing"
 )
 
-
 func TestStack(t *testing.T) {
 	t.Run("trueのパターン", func(t *testing.T) {
-		stack := newStack()
-		stack.push(2)
-		stack.push(3)
-		stack.push(1)
-		stack.push(3)
+		stack := NewStack()
+		stack.Push(2)
+		stack.Push(3)
+		stack.Push(1)
+		stack.Push(3)
 
-		result, err := stack.max()
+		result, err := stack.Max()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 3, result)
 
-		result, err = stack.pop()
+		result, err = stack.Pop()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 3, result)
 
-		result, err = stack.max()
+		result, err = stack.Max()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 3, result)
 
-		result, err = stack.pop()
+		result, err = stack.Pop()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 1, result)
 
-		result, err = stack.max()
+		result, err = stack.Max()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 3, result)
 
-		result, err = stack.pop()
+		result, err = stack.Pop()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 3, result)
 
-		result, err = stack.max()
+		result, err = stack.Max()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 2, result)
 
-		result, err = stack.pop()
+		result, err = stack.Pop()
 		assert.Nil(t, err)
 		assert.EqualValues(t, 2, result)
 	})
 
 	t.Run("falseのパターン", func(t *testing.T) {
-		stack := newStack()
+		stack := NewStack()
 
-		assert.EqualValues(t, stack.isEmpty(), true)
-
-		_, err := stack.max()
+		_, err := stack.Max()
 		assert.NotNil(t, err)
 
-		_, err = stack.pop()
+		_, err = stack.Pop()
 		assert.NotNil(t, err)
 	})
 }
