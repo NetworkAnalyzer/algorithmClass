@@ -22,66 +22,10 @@ const (
 	SquareClose = "]"
 )
 
-// count of brackets Brackets
-type Brackets struct {
-	state struct {
-		round  int
-		curly  int
-		square int
-	}
-	banned []string
-}
-
-func isOpen(bracket string) bool {
-	return funk.Contains([]string{RoundOpen, CurlyOpen, SquareOpen}, bracket)
-}
-
-func isClose(bracket string) bool {
-	return funk.Contains([]string{RoundClose, CurlyClose, SquareClose}, bracket)
-}
-
-func (b *Brackets) canClose(bracket string) bool {
-	return !funk.Contains(b.banned, bracket)
-}
-
-func (b *Brackets) isAllClosed() bool {
-	return b.state.round == 0 && b.state.curly == 0 && b.state.square == 0
-}
-
-func (b *Brackets) open(bracket string) {
-	switch bracket {
-	case RoundOpen:
-		b.state.round++
-		b.banned = []string{CurlyClose, SquareClose}
-	case CurlyOpen:
-		b.state.curly++
-		b.banned = []string{RoundClose, SquareClose}
-	case SquareOpen:
-		b.state.square++
-		b.banned = []string{RoundClose, CurlyClose}
-	}
-}
-
-func (b *Brackets) close(bracket string) bool {
-	if !b.canClose(bracket) {
-		return false
-	}
-
-	switch bracket {
-	case RoundClose:
-		b.state.round--
-	case CurlyClose:
-		b.state.curly--
-	case SquareClose:
-		b.state.square--
-	}
-
-	b.resetBanned()
-	return true
-}
-
-func (b *Brackets) resetBanned() {
-	b.banned = []string{}
+var bracketPair = map[string]string{
+	RoundClose:  RoundOpen,
+	CurlyClose:  CurlyOpen,
+	SquareClose: SquareOpen,
 }
 
 func Run(str string) (bool, error) {
@@ -90,18 +34,30 @@ func Run(str string) (bool, error) {
 		return false, errors.New("allowed only brackets")
 	}
 
-	chars := strings.Split(str, "")
-	brackets := Brackets{}
+	stack := make([]string, 0)
 
-	for _, char := range chars {
+	for _, char := range strings.Split(str, "") {
 		if isOpen(char) {
-			brackets.open(char)
-		} else if isClose(char) {
-			if ok := brackets.close(char); !ok {
-				return false, nil
+			stack = append(stack, char)
+		} else {
+			if last(stack) == bracketPair[char] {
+				stack = removeLast(stack)
 			}
 		}
 	}
 
-	return brackets.isAllClosed(), nil
+	return len(stack) == 0, nil
+}
+
+// utils
+func isOpen(bracket string) bool {
+	return funk.Contains([]string{RoundOpen, CurlyOpen, SquareOpen}, bracket)
+}
+
+func last(slice []string) string {
+	return slice[len(slice) - 1]
+}
+
+func removeLast(slice []string) []string {
+	return slice[:len(slice) - 1]
 }
